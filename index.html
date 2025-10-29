@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Your Age</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #00ffc6, #007cf0);
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 30px rgba(0, 255, 200, 0.3);
+        padding: 30px 25px;
+        width: 90%;
+        max-width: 400px;
+        color: #fff;
+        text-align: center;
+        animation: fadeIn 0.8s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        background: linear-gradient(90deg, #00ffe5, #80ffea);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      .input-section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .input-section input {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        outline: none;
+        padding: 12px 15px;
+        border-radius: 10px;
+        font-size: 1rem;
+        color: #fff;
+        transition: 0.3s;
+        text-align: center;
+      }
+
+      .input-section input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .input-section input:focus {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+      }
+
+      .btn-section {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .btn-section input {
+        flex: 1;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        padding: 12px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #fff;
+      }
+
+      #subbtn {
+        background: linear-gradient(135deg, #00ffcc, #0099ff);
+      }
+
+      #subbtn:hover {
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        transform: translateY(-2px);
+      }
+
+      #clearbtn {
+        background: linear-gradient(135deg, #ff5f5f, #ff9a9a);
+      }
+
+      #clearbtn:hover {
+        box-shadow: 0 0 15px rgba(255, 120, 120, 0.6);
+        transform: translateY(-2px);
+      }
+
+      #pm {
+        display: none;
+        margin-top: 25px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 15px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #e8fff6;
+        box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
+        animation: fadeIn 0.5s ease;
+      }
+
+      @media (max-width: 480px) {
+        .card {
+          padding: 25px 15px;
+        }
+        h1 {
+          font-size: 1.5rem;
+        }
+        .btn-section input {
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card">
+      <h1>Find Your Age</h1>
+
+      <div class="input-section">
+        <input type="number" id="day" placeholder="Birth Day (1–31)" />
+        <input type="number" id="month" placeholder="Birth Month (1–12)" />
+        <input type="number" id="year" placeholder="Birth Year (e.g., 2000)" />
+      </div>
+
+      <div class="btn-section">
+        <input type="button" id="subbtn" value="Submit" />
+        <input type="reset" id="clearbtn" value="Clear" />
+      </div>
+
+      <div id="pm"></div>
+    </div>
+
+    <script>
+      const pm = document.getElementById("pm");
+      const subbtn = document.getElementById("subbtn");
+      const clearbtn = document.getElementById("clearbtn");
+
+      subbtn.addEventListener("click", () => {
+        const day = parseInt(document.getElementById("day").value);
+        const month = parseInt(document.getElementById("month").value);
+        const year = parseInt(document.getElementById("year").value);
+
+        if (
+          !day ||
+          !month ||
+          !year ||
+          day > 31 ||
+          month > 12 ||
+          year > new Date().getFullYear()
+        ) {
+          pm.style.display = "block";
+          pm.innerHTML = "⚠️ Please enter a valid date of birth.";
+          return;
+        }
+
+        const today = new Date();
+        const birthDate = new Date(year, month - 1, day);
+        if (birthDate > today) {
+          pm.style.display = "block";
+          pm.innerHTML = "❌ Birth date cannot be in the future!";
+          return;
+        }
+
+        let ageYear = today.getFullYear() - birthDate.getFullYear();
+        let ageMonth = today.getMonth() - birthDate.getMonth();
+        let ageDay = today.getDate() - birthDate.getDate();
+
+        if (ageDay < 0) {
+          ageMonth--;
+          ageDay += new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            0
+          ).getDate();
+        }
+        if (ageMonth < 0) {
+          ageYear--;
+          ageMonth += 12;
+        }
+
+        pm.style.display = "block";
+        pm.innerHTML = `
+          🎉 You are <br>
+          <strong>${ageYear}</strong> Years, 
+          <strong>${ageMonth}</strong> Months, and 
+          <strong>${ageDay}</strong> Days old.
+        `;
+      });
+
+      clearbtn.addEventListener("click", () => {
+        pm.style.display = "none";
+        pm.innerHTML = "";
+      });
+    </script>
+  </body>
+</html>
